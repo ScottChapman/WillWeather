@@ -3,8 +3,8 @@ const moment = require('moment')
 const openwhisk = require('openwhisk')
 
 async function main(message) {
-    console.log("***" + JSON.stringify(process.env))
-    console.log("***" + JSON.stringify(message))
+    // console.log("***" + JSON.stringify(process.env))
+    // console.log("***" + JSON.stringify(message))
     const ow = openwhisk();
     const [package] = _.filter(await ow.packages.list(), package => {
         if (package.name.startsWith("Bluemix_Weather"))
@@ -49,6 +49,7 @@ async function main(message) {
 
 // process.env.TZ = "America/New_York"
 
+/*
 main({
     latitude: "42.6167569",
     longitude: "-71.5828456"
@@ -57,3 +58,4 @@ main({
 }).catch(err => {
     console.dir(err)
 })
+*/
