@@ -18,3 +18,14 @@ Weather Forecast for Will
     * *hours*: (comma separated list of hours, defaults to `7,11,15`
     * *latitude*: required
     * *longitude*: required
+
+## Returns
+```
+{
+  "forecasts": [
+    "Today 03PM: Very Good/M Sunny (63°F, 0%, 15MPH)",
+    "Tomorrow 07AM: Fair/Sunny (44°F, 5%, 3MPH)",
+    "Tomorrow 11AM: Good/Sunny (55°F, 0%, 5MPH)"
+  ]
+}
+```
