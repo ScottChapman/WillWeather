@@ -16,6 +16,7 @@ async function main(message) {
     
     var hours = _.split(message.hours || "7,11,15",",");
     const today = moment();
+    const tomorrow = moment().add(1,'day');
     hours = _.map(hours, hour => {
         return _.parseInt(hour)
     })
@@ -23,25 +24,27 @@ async function main(message) {
         units: 'e',
         timePeriod: "48hour"
     }, _.pick(message,["latitude","longitude","units","timePeriod"]))
-    var resp = _.filter((await ow.actions.invoke({
+    var resp = [];
+    const {forecasts} = await ow.actions.invoke({
         name: `${package.name}/forecast`,
         blocking: true,
         result: true,
         params: params
-    })).forecasts,forecast => {
+    });
+    for (var forecast of forecasts) {
         const day = moment.unix(forecast.fcst_valid)
+        if (!day.isBetween(today,tomorrow))
+            continue
         if (today.date() === day.date())
-            forecast.day = "today"
+            forecast.day = "Today"
         else
-            forecast.day = "tomorrow"
-        forecast.hour = day.hour();
+            forecast.day = "Tomorrow"
+        forecast.hour = day.format("hhA")
         if (hours.includes(day.hour())) {
-            return forecast;
+            resp.push(`${forecast.day} ${forecast.hour}: ${forecast.golf_category}/${forecast.phrase_12char} (${forecast.temp}\u00B0F, ${forecast.pop}%, ${forecast.wspd}MPH)`);
         }
-    })
-    return {
-        forecasts: resp
     }
+    return { forecasts: resp }
 }
 
 // process.env.TZ = "America/New_York"
