@@ -12,8 +12,8 @@ Weather Forecast for Will
  * Create credentials for the service
  * Refresh Cloud Functions Packages: `ibmcloud fn package refresh`
  * Clone repository: `git clone https://github.com/ScottChapman/WillWeather.git`
+ * change directory to WillWeather
  * Install action: `ibmcloud fn action create forecast index.js --web true --kind nodejs:10`
- * To update the action: `ibmcloud fn action update forecast index.js --web true --kind nodejs:10`
  * get URL for action: `ibmcloud fn action get --url forecast`
  * in your browser invoke that URL (NOTE: Add `.json` to the end of the URL
  * URL parameters include:
@@ -21,6 +21,10 @@ Weather Forecast for Will
     * *latitude*: required
     * *longitude*: required
 
+## Update steps
+ * Clone repository: `git pull`
+ * To update the action: `ibmcloud fn action update forecast index.js --web true --kind nodejs:10`
+ 
 ## Returns
 ```
 {
