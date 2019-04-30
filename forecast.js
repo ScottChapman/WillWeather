@@ -2,9 +2,6 @@ const _ = require('lodash')
 const moment = require('moment')
 const openwhisk = require('openwhisk')
 
-function geocode(postalCode) {
-}
-
 async function main(message) {
     // console.log("***" + JSON.stringify(process.env))
     // console.log("***" + JSON.stringify(message))
@@ -32,12 +29,13 @@ async function main(message) {
     if (!package)
         throw new Error("No Weather Service bound to this space")
     
-    var hours = _.split(message.hours || "7,11,15",",");
+    if (message.hours) {
+        var hours = _.map(_.split(message.hours,","), hour => {
+            return _.parseInt(hour)
+        })
+    }
     const today = moment();
     const tomorrow = moment().add(1,'day');
-    hours = _.map(hours, hour => {
-        return _.parseInt(hour)
-    })
     var params = _.assign({
         units: 'e',
         timePeriod: "48hour"
@@ -50,28 +48,24 @@ async function main(message) {
         params: params
     });
     for (var forecast of forecasts) {
-        const day = moment.unix(forecast.fcst_valid)
+        const day = moment(forecast.fcst_valid_local)
         forecast.hour = day.format("hhA")
-        if (today.date() === day.date())
-            forecast.day = "Today"
-        else if (tomorrow.date() === day.date())
-            forecast.day = "Tomorrow"
-        else 
-            forecast.day = "Next Day"
-        if (!day.isBetween(today,tomorrow))
-            continue
-        if (hours.includes(day.hour())) {
-            resp.push(`${forecast.day} ${forecast.hour}: ${forecast.golf_category}/${forecast.phrase_12char} (${forecast.temp}\u00B0F, ${forecast.pop}%, ${forecast.wspd}MPH)`);
+        console.log("Hour: " + forecast.hour)
+        if (!forecast.golf_index)
+            forecast.golf_category = "Unknown"
+        if (!hours || hours.includes(day.hour())) {
+            if (message.raw)
+                resp.push(forecast)
+            else
+                resp.push(`${forecast.dow} ${forecast.hour}: ${forecast.golf_category}/${forecast.phrase_12char} (${forecast.temp}\u00B0F, ${forecast.pop}%, ${forecast.wspd}MPH)`);
         }
     }
-    if (message.raw) 
-        return { forecasts: forecasts};
-    else
-        return { forecasts: resp }
+    return { forecasts: resp }
 }
 
 // process.env.TZ = "America/New_York"
 
+/*
 var latlong = {
     latitude: "42.6167569",
     longitude: "-71.5828456"
@@ -85,3 +79,4 @@ main(zipcode).then(resp => {
 }).catch(err => {
     console.dir(err)
 })
+*/
