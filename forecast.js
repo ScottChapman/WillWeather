@@ -50,7 +50,6 @@ async function main(message) {
     for (var forecast of forecasts) {
         const day = moment(forecast.fcst_valid_local)
         forecast.hour = day.format("hhA")
-        console.log("Hour: " + forecast.hour)
         if (!forecast.golf_index)
             forecast.golf_category = "Unknown"
         if (!hours || hours.includes(day.hour())) {
@@ -58,6 +57,12 @@ async function main(message) {
                 resp.push(forecast)
             else
                 resp.push(`${forecast.dow} ${forecast.hour}: ${forecast.golf_category}/${forecast.phrase_12char} (${forecast.temp}\u00B0F, ${forecast.pop}%, ${forecast.wspd}MPH)`);
+            
+            if (message.firstOnly && hours) {
+                _.remove(hours, val => {
+                    return val === day.hour()
+                })
+            }
         }
     }
     return { forecasts: resp }
@@ -65,12 +70,13 @@ async function main(message) {
 
 // process.env.TZ = "America/New_York"
 
-/*
 var latlong = {
     latitude: "42.6167569",
     longitude: "-71.5828456"
 };
 const zipcode = {
+    hours: "7,11,15",
+    firstOnly: true,
     raw: true,
     zipcode: "01450"
 }
@@ -79,4 +85,3 @@ main(zipcode).then(resp => {
 }).catch(err => {
     console.dir(err)
 })
-*/
