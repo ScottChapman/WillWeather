@@ -70,6 +70,7 @@ async function main(message) {
 
 // process.env.TZ = "America/New_York"
 
+/*
 var latlong = {
     latitude: "42.6167569",
     longitude: "-71.5828456"
@@ -77,7 +78,6 @@ var latlong = {
 const zipcode = {
     hours: "7,11,15",
     firstOnly: true,
-    raw: true,
     zipcode: "01450"
 }
 main(zipcode).then(resp => {
@@ -85,3 +85,4 @@ main(zipcode).then(resp => {
 }).catch(err => {
     console.dir(err)
 })
+*/
