@@ -49,6 +49,7 @@ async function main(message) {
     });
     for (var forecast of forecasts) {
         const day = moment(forecast.fcst_valid_local)
+        forecast.dow = day.format('dddd')
         forecast.hour = day.format("hhA")
         if (!forecast.golf_index)
             forecast.golf_category = "Unknown"
@@ -70,7 +71,6 @@ async function main(message) {
 
 // process.env.TZ = "America/New_York"
 
-/*
 var latlong = {
     latitude: "42.6167569",
     longitude: "-71.5828456"
@@ -85,4 +85,3 @@ main(zipcode).then(resp => {
 }).catch(err => {
     console.dir(err)
 })
-*/
